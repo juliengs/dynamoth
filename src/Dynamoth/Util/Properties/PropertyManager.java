@@ -73,17 +73,6 @@ public class PropertyManager {
 			PropertyManager.propertyFiles.put(file, props);
 		}
 
-		if(file.equals("mammoth.properties") && !disableDbProperties) {
-			boolean useDb = Boolean.parseBoolean(
-					props.getProperty("properties.db.enable").trim());
-
-			if (useDb) {
-				/*Properties dbProps = new DbProperties(props);
-				PropertyManager.propertyFiles.put(file, dbProps);
-				return dbProps;*/
-			}
-		}
-
 		return props;
 	}	
 }
