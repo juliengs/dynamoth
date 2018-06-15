@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Invoke Java launcher
+#  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
+java -Xmx1900M -Dfile.encoding=UTF-8 -classpath ./build/classes:./lib/commons-lang-2.3.jar:./lib/jedis-2.1.0.jar:./lib/sigar.jar -Dec2.region=LOCAL Dynamoth.Client.CommandLineClient "$@"
