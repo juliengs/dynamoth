@@ -180,9 +180,9 @@ public class LoadBalancer {
 		
 		//System.out.println("*** End LoadEvaluator Dump ***");
 		
-		if (processTickCount == 30) {
+		if (processTickCount > 0 && processTickCount % 10 == 0) {
 			
-			//pushDummyLBPlan(0);
+			pushDummyLBPlan( (processTickCount / 10 ) % 2 );
 			
 		} else if (processTickCount == 60) {
 			
@@ -233,11 +233,11 @@ public class LoadBalancer {
 		int hostCount = 1;
 		
 		// If time > 10, start rebalancer if not started
-		if (processTickCount >= 10 && this.rebalancer == null) {
+		if (processTickCount >= 10000 && this.rebalancer == null) {
 			// Create and start rebalancer
-			this.rebalancer = new MultiPubRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
+			//this.rebalancer = new MultiPubRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
 			//this.rebalancer = new DynaWANLocationRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
-			//this.rebalancer = new DynamothRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
+			this.rebalancer = new DynamothRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
 			//this.rebalancer = new ConsistentHashingRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
 			/*HierarchicalLoadBasedRebalancer hlb = new HierarchicalLoadBasedRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap);
 			hlb.addRebalancer(new DynamothReplicationRebalancer(this.getCurrentPlan(), currentTime, avgLoadEvaluator, this.hostInfoMap));
@@ -750,18 +750,26 @@ public class LoadBalancer {
 		
 		for (int i=0; i<RConfig.getTileCountX(); i++) {
 			for (int j=0; j<RConfig.getTileCountY(); j++) {
-				if (index==0) {
+				if (index==10) {
 					//plan.setMapping("tile_" + i + "_" + j + "|A", new PlanMappingImpl(new PlanId(1), "tile_" + i + "_" + j + "|A", new RPubClientId(1)));
 					//plan.setMapping("tile_" + i + "_" + j + "|B", new PlanMappingImpl(new PlanId(1), "tile_" + i + "_" + j + "|B", new RPubClientId(1)));
 					plan.setMapping("tile_" + i + "_" + j, new PlanMappingImpl(new PlanId(0), "tile_" + i + "_" + j, new RPubClientId[] {
 							new RPubClientId(0),  new RPubClientId(1), new RPubClientId(3)
 							}, PlanMappingStrategy.DYNAWAN_ROUTING));
-				} else if (index == 1) {
+				} else if (index == 11) {
 					//plan.setMapping("tile_" + i + "_" + j + "|A", new PlanMappingImpl(new PlanId(1), "tile_" + i + "_" + j + "|A", new RPubClientId(1)));
 					//plan.setMapping("tile_" + i + "_" + j + "|B", new PlanMappingImpl(new PlanId(1), "tile_" + i + "_" + j + "|B", new RPubClientId(1)));
 					plan.setMapping("tile_" + i + "_" + j, new PlanMappingImpl(new PlanId(0), "tile_" + i + "_" + j, new RPubClientId[] {
 							new RPubClientId(0)
 							}, PlanMappingStrategy.DYNAWAN_ROUTING));
+				} else if (index == 0) {
+					plan.setMapping("tile_" + i + "_" + j, new PlanMappingImpl(plan.getPlanId(), "tile_" + i + "_" + j, new RPubClientId[] {
+							new RPubClientId(0)
+							}, PlanMappingStrategy.DEFAULT_STRATEGY));
+				}  else if (index == 1) {
+					plan.setMapping("tile_" + i + "_" + j, new PlanMappingImpl(plan.getPlanId(), "tile_" + i + "_" + j, new RPubClientId[] {
+							new RPubClientId(1)
+							}, PlanMappingStrategy.DEFAULT_STRATEGY));
 				}
 			}
 		}

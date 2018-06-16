@@ -568,6 +568,11 @@ public class DynamothRPubManager extends AbstractRPubManager {
 			RPubClientId[] shards = mapping.getShards();
 
 			//return new RPubClient[] { this.getHashedShard(channelName) };
+			if (channelName.startsWith("tile_")) {
+				RPubClient[] bs = buildShards(mapping.getStrategy().selectSubscriptionShards(mapping, this.hashCode()));
+				System.out.println("getSubscriptionShards [" + channelName + "]: " + bs.length + " | " + bs[0].getId().getId());
+				
+			}
 			return buildShards(mapping.getStrategy().selectSubscriptionShards(mapping, this.hashCode()));
 		
 		}
