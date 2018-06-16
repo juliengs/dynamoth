@@ -328,7 +328,7 @@ public class LocalLoadAnalyzer {
 		}
 		
 		// Check to see if we need to send keepalive messages
-		sendKeepAliveMessages();
+		//sendKeepAliveMessages();
 		
 	}
 	
@@ -498,10 +498,10 @@ public class LocalLoadAnalyzer {
 				System.out.print(sub.getId().toString());
 			}
 			System.out.print("\n");
-			System.out.print("Unique Subscribers: ");
+			/*System.out.print("Unique Subscribers: ");
 			for (RPubNetworkID sub : uniqueSubscribers ) {
 				System.out.print(sub.toString());
-			}
+			}*/
 			System.out.print("\n");
 			
 			//RConfig.printTileMap(publishers);
@@ -736,6 +736,9 @@ public class LocalLoadAnalyzer {
 			if (message instanceof RPubSubscriptionMessage) {
 				RPubSubscriptionMessage subMessage = (RPubSubscriptionMessage)message;
 				
+				// Get channel name for this subscription
+				String subChannelName = subMessage.getChannelName();
+				
 				//System.out.println("New subscription: targetID=" + subMessage.getTargetID().toString() + " to " + subMessage.getChannelName());
 				
 				// If the subscriber IS NOT the LLA (we don't count the LLA as a subscriber because it outputs
@@ -744,9 +747,6 @@ public class LocalLoadAnalyzer {
 				// we HAVE TO take the subscription into account because it will generate real traffic
 				if (subMessage.getTargetID().equals(this.llaEngine.getId()) == false) {
 					// Different engine, so we can process
-				
-					// Get channel name for this subscription
-					String subChannelName = subMessage.getChannelName();
 					
 					// Make sure the channel exists and is registered so that we can monitor it!
 					createAndRegisterChannel(subChannelName);
@@ -757,10 +757,45 @@ public class LocalLoadAnalyzer {
 					} else if (message instanceof RPubUnsubscribeMessage) {
 						unregisterSubscriberForChannel(subMessage.getTargetID(), subChannelName);
 					}
+					
+					// Check to see if we subscribed to correct server in plan --> if not, then
+					// ask client to move subscription
+					
+					//Get current plan
+					PlanMapping channelPlan = getPlan().getMapping(subChannelName);
+					//get clients plan
+					//PlanMapping clientPlan = getPlanHistory().get(message.getPlanID().getId()).getMapping(subChannelName); // get client plan from message
+					
+					// If different, then send the switch message
+					// NOTE: here we assume no replication -- algorithm should be changed to support replication
+					if (channelPlan.getShards()[0].equals(id) == false) {
+						// Ask all subscribers to switch
+						// Get the mapping as defined in Dynamoth's plan
+						ChangeChannelMappingControlMessage changeMessage = new ChangeChannelMappingControlMessage(subChannelName, channelPlan, id);
+
+						// Send the publication through this lla engine so that it is sent to (old) subscribers,
+						// which are subscribers still bound to THIS server
+
+						try {
+							this.llaEngine.send(subChannelName, changeMessage);
+						} catch (ClosedChannelException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NoSuchChannelException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
 				
 				} else {
 					// Same engine -> don't process
 					// (this branch should be removed)
+					
+					
 				}
 				
 			} else if (message instanceof RPubBroadcastMessage) {
