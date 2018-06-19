@@ -21,6 +21,7 @@ import Dynamoth.Core.RPubPublishMessage;
 import Dynamoth.Core.RPubSubscribeMessage;
 import Dynamoth.Core.RPubUnsubscribeMessage;
 import Dynamoth.Core.Game.Messages.RGameMoveMessage;
+import Dynamoth.Core.RPubRawMessage;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.Pipeline;
@@ -398,12 +399,10 @@ public class JedisRPubClient implements RPubClient {
 			RPubMessage msg = null;
 			try {
 				msg = (RPubMessage)fromString(message);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				//e.printStackTrace();
+				// If we can't parse, then instead create a raw data message
+				msg = new RPubRawMessage(new RPubNetworkID(0), message);
 			}
 			
 			// If broadcast or publish message and source is 'Self', then don't consume it

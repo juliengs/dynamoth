@@ -229,7 +229,7 @@ public class RPubNetworkEngine extends BaseNetworkEngine implements RPubMessageL
 		// If subscription message
 		if (message instanceof RPubSubscriptionMessage) {
 			// Do nothing - subscription already handled at a higher level
-		} else {
+		} else if (message instanceof RPubDataMessage) {
 			Serializable payload = ((RPubDataMessage)message).getPayload();
 			
 			// If connection message, then notify the clients, otherwise, queue it
@@ -242,6 +242,9 @@ public class RPubNetworkEngine extends BaseNetworkEngine implements RPubMessageL
 				// Queue for transmission
 				this.queueMessage( payload );
 			}
+		} else {
+			// Nothing to do -- message is probably a raw data message
+			// Interested consumers can must hook as a low-level listener to retrieve it
 		}
 		
 		// Notify low level listeners
