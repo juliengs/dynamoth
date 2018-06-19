@@ -46,6 +46,7 @@ import Dynamoth.Core.Manager.Plan.PlanImpl;
 import Dynamoth.Core.Manager.Plan.PlanMapping;
 import Dynamoth.Core.Manager.Plan.PlanMapping.PlanMappingStrategy;
 import Dynamoth.Core.Manager.Plan.PlanMappingImpl;
+import Dynamoth.Core.RPubNetworkEngine;
 import Dynamoth.Core.Util.RPubHostInfo;
 import Dynamoth.Core.Util.ShardHasher;
 import Dynamoth.Util.Properties.PropertyManager;
@@ -227,12 +228,7 @@ public class DynamothRPubManager extends AbstractRPubManager {
 		
 		// Create the default plan
 		PlanImpl plan = new PlanImpl(new PlanId(0));
-		plan.setMapping("track-info", new PlanMappingImpl(new PlanId(0), "track-info", new RPubClientId(2)));
-		//plan.setMapping("replication-test-default", new PlanMappingImpl(new PlanId(0), "replication-test-default", new RPubClientId[]{new RPubClientId(0)}, PlanMappingStrategy.DEFAULT_STRATEGY));
-		//plan.setMapping("replication-test-pfc", new PlanMappingImpl(new PlanId(0), "replication-test-pfc", new RPubClientId[]{new RPubClientId(0), new RPubClientId(1), new RPubClientId(2)}, PlanMappingStrategy.PUBLISHERS_FULLY_CONNECTED));
-		//plan.setMapping("replication-test-sfc", new PlanMappingImpl(new PlanId(0), "replication-test-sfc", new RPubClientId[]{new RPubClientId(0), new RPubClientId(1), new RPubClientId(2)}, PlanMappingStrategy.SUBSCRIBERS_FULLY_CONNECTED));
-		//plan.setMapping("replication-test-dynamic", new PlanMappingImpl(new PlanId(0), "replication-test-dynamic", new RPubClientId[]{new RPubClientId(0), new RPubClientId(1), new RPubClientId(2)}, PlanMappingStrategy.PUBLISHERS_FULLY_CONNECTED));
-		//plan.setMapping("replication-test-dynamic", new PlanMappingImpl(new PlanId(0), "replication-test-dynamic", new RPubClientId[]{new RPubClientId(0)}, PlanMappingStrategy.DEFAULT_STRATEGY));
+		plan.setMapping("track-info", new PlanMappingImpl(new PlanId(0), "track-info", new RPubClientId(RPubNetworkEngine.getInfrastructureServer())));
 		plan.setMapping("tile_0_0DUMMY", new PlanMappingImpl(new PlanId(0), "tile_0_0DUMMY", new RPubClientId(1)));
 		
 		// Set all tile_i_j_B to RPubClientId1

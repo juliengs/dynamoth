@@ -12,6 +12,7 @@ import Dynamoth.Core.Manager.Plan.Plan;
 import Dynamoth.Core.Manager.Plan.PlanImpl;
 import Dynamoth.Core.Manager.Plan.PlanMapping.PlanMappingStrategy;
 import Dynamoth.Core.Manager.Plan.PlanMappingImpl;
+import Dynamoth.Core.RPubNetworkEngine;
 import Dynamoth.Core.Util.RPubHostInfo;
 
 public class DynamothRebalancer extends LoadBasedRebalancer {
@@ -51,7 +52,7 @@ public class DynamothRebalancer extends LoadBasedRebalancer {
 		super(currentPlan, currentTime, currentLoadEvaluator, hostInfoMap);
 		
 		// Setup ignore list
-		ignoreRPubList.add(new RPubClientId(2));
+		ignoreRPubList.add(new RPubClientId(RPubNetworkEngine.getInfrastructureServer()));
 		defaultIgnoreChannels.addAll( Arrays.asList(new String[] {"loadbalancer-channel", "plan-push-channel", "loadanalyzer-channel", "track-info"}));
 		ignoreChannels.addAll(defaultIgnoreChannels);
 	}
@@ -183,7 +184,7 @@ public class DynamothRebalancer extends LoadBasedRebalancer {
 					
 					// But exclude RPub #2...
 					Set<RPubClientId> allHosts = new HashSet<RPubClientId>(loadEvaluator.getRPubClients());
-					allHosts.remove(new RPubClientId(2));
+					allHosts.remove(new RPubClientId(RPubNetworkEngine.getInfrastructureServer()));
 					lowestClientId = loadEvaluator.getClientLowestByteOut(allHosts);
 					lowestByteOut = loadEvaluator.getClientByteOutRatio(lowestClientId);
 					

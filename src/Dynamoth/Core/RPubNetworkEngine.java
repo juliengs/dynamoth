@@ -1,5 +1,6 @@
 package Dynamoth.Core;
 
+import Dynamoth.Client.Client;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.ClosedChannelException;
@@ -21,6 +22,9 @@ import Dynamoth.Core.Manager.HashedRPubManager;
 import Dynamoth.Core.Manager.LLADynamothRPubManager;
 import Dynamoth.Core.Manager.RPubManager;
 import Dynamoth.Core.Manager.RPubManagerType;
+import Dynamoth.Util.Properties.PropertyManager;
+import java.util.Properties;
+import org.apache.commons.lang.StringUtils;
 
 public class RPubNetworkEngine extends BaseNetworkEngine implements RPubMessageListener {
 
@@ -264,5 +268,10 @@ public class RPubNetworkEngine extends BaseNetworkEngine implements RPubMessageL
 
 	public boolean isInfrastructure() {
 		return infrastructure;
+	}
+	
+	public static int getInfrastructureServer() {
+		Properties props = PropertyManager.getProperties(Client.DEFAULT_CONFIG_FILE);
+		return Integer.parseInt(StringUtils.strip(props.getProperty("network.rpub.infrastructure_server")));
 	}
 }

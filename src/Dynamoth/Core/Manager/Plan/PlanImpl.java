@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import Dynamoth.Core.Client.RPubClientId;
 import Dynamoth.Core.LoadAnalyzing.Channel;
+import Dynamoth.Core.RPubNetworkEngine;
 
 public class PlanImpl implements Plan {
 
@@ -83,7 +84,7 @@ public class PlanImpl implements Plan {
 			 * for some channels
 			 * */
 			if (channelName.equals("track-info")) {
-				return new PlanMappingImpl(this.getPlanId(), channelName, new RPubClientId(2));
+				return new PlanMappingImpl(this.getPlanId(), channelName, new RPubClientId(RPubNetworkEngine.getInfrastructureServer()));
 			} else {
 				return new PlanMappingImpl(this.getPlanId(), channelName, RPubClientId.Default);
 			}
