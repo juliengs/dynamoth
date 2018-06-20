@@ -10,6 +10,8 @@ import Dynamoth.Core.RPubPublishMessage;
 import Dynamoth.Core.RPubRawMessage;
 import Dynamoth.Mammoth.NetworkEngine.Exceptions.AlreadyConnectedException;
 import Dynamoth.Mammoth.NetworkEngine.Exceptions.NoSuchChannelException;
+import Dynamoth.Mammoth.NetworkEngine.NetworkEngineID;
+import Dynamoth.Mammoth.NetworkEngine.NetworkEngineListener;
 import Dynamoth.Util.Message.Reactor;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -57,6 +59,9 @@ public class ExternalClient {
 				}
 			}
 		});
+		
+		// Create and register a reactor for RPub
+		//reactor = new Reactor("RClient" + this.id + "Reactor", engine);
 	}
 	
 	public void parseAndDispatch(String payload) {
@@ -123,5 +128,7 @@ public class ExternalClient {
 		}
 	}
 	
-	public voide handlePublication()
+	public voide handlePublication(int clientId, String topic, String msg) {
+		
+	}
 }
