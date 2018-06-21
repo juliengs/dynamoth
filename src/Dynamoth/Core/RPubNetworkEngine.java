@@ -61,9 +61,13 @@ public class RPubNetworkEngine extends BaseNetworkEngine implements RPubMessageL
 	}
 	
 	public RPubNetworkEngine(RPubManagerType managerType, boolean infrastructure) {
+		this(managerType, infrastructure, new RPubNetworkID());
+	}
+	
+	public RPubNetworkEngine(RPubManagerType managerType, boolean infrastructure, RPubNetworkID id) {
 		super();
 		
-		this.setId(new RPubNetworkID());
+		this.setId(id);
 		this.infrastructure = infrastructure;
 		
 		rpubManager = createManager(managerType);
