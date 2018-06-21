@@ -226,6 +226,15 @@ public class JedisRPubClient implements RPubClient {
 	
 	@Override
 	public void publishToChannel(String channelName, RPubMessage message) {
+		
+		// Hack: if our message is a raw message, then send only the payload
+		// (do not serialize)
+		if (message instanceof RPubRawMessage) {
+			RPubRawMessage raw = (RPubRawMessage)message;
+			queuePublication(channelName, raw.getPayload());
+			return;
+		}
+		
 		try {
 			String messageAsString = toString(message);
 			
