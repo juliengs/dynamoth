@@ -1,5 +1,6 @@
 package Dynamoth.Client;
 
+import Dynamoth.Core.ExternalClient.ExternalClient;
 import Dynamoth.Core.RPubHubWrapper;
 import Dynamoth.Core.Game.RMain;
 import Dynamoth.Core.Game.RServer;
@@ -60,6 +61,8 @@ public class CommandLineClient {
 			RawKingDataset.main(new String[] {});
 		} else if (mode.equals("maxthreadsmain")) {
 			MaxThreadsMain.main(new String[] {});
+		} else if (mode.equals("externalclient")) {
+			ExternalClient.main(new String[] {});
 		}
 		
 	}

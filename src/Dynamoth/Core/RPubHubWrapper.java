@@ -13,6 +13,7 @@ import java.util.Scanner;
 import Dynamoth.Client.Client;
 import Dynamoth.Mammoth.NetworkEngine.Exceptions.AlreadyConnectedException;
 import Dynamoth.Core.Client.RPubClientId;
+import Dynamoth.Core.ExternalClient.ExternalClient;
 import Dynamoth.Core.LoadAnalyzing.LocalLoadAnalyzer;
 import Dynamoth.Core.Manager.DynamothRPubManager;
 import Dynamoth.Core.Manager.LLADynamothRPubManager;

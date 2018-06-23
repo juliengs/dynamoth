@@ -39,7 +39,12 @@ public class ExternalClient {
 	
 	public ExternalClient() {
 	
+	}
+	
+	public static void main(String[] args) {
 		
+		ExternalClient externalClient = new ExternalClient();
+		externalClient.initialize();
 		
 	}
 	
@@ -57,6 +62,13 @@ public class ExternalClient {
 			e.printStackTrace();
 		}
 		
+		try {
+			// Subscribe to external client channel
+			engine.subscribeChannel(externalClientChannel, engine.getId());
+		} catch (NoSuchChannelException ex) {
+			Logger.getLogger(ExternalClient.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 		// Subscribe to raw messages
 		engine.registerLowLevelListener(new RPubNetworkEngine.LowLevelListener() {
 			@Override
@@ -64,6 +76,8 @@ public class ExternalClient {
 				// Make sure this is a raw message and that the channel is appropriate
 				if (channelName.equals(externalClientChannel) && message instanceof RPubRawMessage) {
 					RPubRawMessage raw = (RPubRawMessage)message;
+					
+					
 					
 					// Parse the raw messages
 					parseAndDispatch(raw.getPayload());
@@ -75,7 +89,7 @@ public class ExternalClient {
 	
 	public void parseAndDispatch(String payload) {
 		// Split by linebreaks
-		String[] lines = payload.split(payload, 4);
+		String[] lines = payload.split("\n", 4);
 		// TODO: check for arg count
 		// 1st arg: client id
 		int clientId = Integer.parseInt(lines[0]);
@@ -127,8 +141,12 @@ public class ExternalClient {
 					
 					// Send to our external client
 					String topicName = externalClientChannel + "_" + clientId;
+					
+					StringBuilder sb = new StringBuilder(channelName + "\n");
+					sb.append(pm.getPayload().toString());
+					
 					// Send raw message
-					RPubRawMessage raw = new RPubRawMessage(new RPubNetworkID(clientId), pm.getPayload().toString());
+					RPubRawMessage raw = new RPubRawMessage(new RPubNetworkID(clientId), sb.toString());
 					try {
 						engine.send(topicName, raw);
 					} catch (IOException ex) {

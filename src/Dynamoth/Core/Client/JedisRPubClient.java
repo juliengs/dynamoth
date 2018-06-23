@@ -229,9 +229,10 @@ public class JedisRPubClient implements RPubClient {
 		
 		// Hack: if our message is a raw message, then send only the payload
 		// (do not serialize)
-		if (message instanceof RPubRawMessage) {
-			RPubRawMessage raw = (RPubRawMessage)message;
+		if (message instanceof RPubPublishMessage && ((RPubPublishMessage)message).getPayload() instanceof RPubRawMessage) {
+			RPubRawMessage raw = (RPubRawMessage)(((RPubPublishMessage)message).getPayload());
 			queuePublication(channelName, raw.getPayload());
+			
 			return;
 		}
 		
@@ -277,6 +278,8 @@ public class JedisRPubClient implements RPubClient {
 			sentCount[jedisIndex].incrementAndGet();
 		}
 		*/
+		
+		System.out.println("QueuePublication: TOPIC: " + channelName + " | MSG: " + message.substring(0, 100));
 		
 		synchronized (channelMsgCount) {
 			if (channelMsgCount.get(channelName) == null) {

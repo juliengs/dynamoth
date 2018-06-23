@@ -274,9 +274,8 @@ public class RedisClient {
 			*/
 			
 			// Message received
-			if (message.startsWith("DBGDBG")) {
-				System.out.println("DEBUG-MSG: " + shardIndex + " message");
-				return;
+			if (channel.startsWith("externalclient")) {
+				System.err.println("message");
 			}
 			
 			// Increment our counter
